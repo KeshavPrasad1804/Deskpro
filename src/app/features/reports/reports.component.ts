@@ -1,9 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Chart, ChartConfiguration, ChartType, registerables } from 'chart.js';
-
-Chart.register(...registerables);
 
 interface ReportData {
   ticketsByStatus: { [key: string]: number };
@@ -115,7 +112,7 @@ interface ReportData {
         <div class="card p-6">
           <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Tickets by Status</h3>
           <div class="chart-container">
-            <canvas #statusChart></canvas>
+            <canvas #statusChart width="400" height="300"></canvas>
           </div>
         </div>
 
@@ -123,7 +120,7 @@ interface ReportData {
         <div class="card p-6">
           <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Tickets by Priority</h3>
           <div class="chart-container">
-            <canvas #priorityChart></canvas>
+            <canvas #priorityChart width="400" height="300"></canvas>
           </div>
         </div>
 
@@ -131,7 +128,7 @@ interface ReportData {
         <div class="card p-6 lg:col-span-2">
           <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Tickets Over Time</h3>
           <div class="chart-container">
-            <canvas #timeChart></canvas>
+            <canvas #timeChart width="800" height="300"></canvas>
           </div>
         </div>
       </div>
@@ -183,7 +180,7 @@ interface ReportData {
       <div class="card p-6">
         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Customer Satisfaction Distribution</h3>
         <div class="chart-container">
-          <canvas #satisfactionChart></canvas>
+          <canvas #satisfactionChart width="400" height="300"></canvas>
         </div>
       </div>
     </div>
@@ -216,9 +213,19 @@ interface ReportData {
     .stats-change.negative::before {
       content: '↘ ';
     }
+
+    canvas {
+      max-width: 100%;
+      height: auto;
+    }
   `]
 })
-export class ReportsComponent implements OnInit {
+export class ReportsComponent implements OnInit, AfterViewInit {
+  @ViewChild('statusChart') statusChart!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('priorityChart') priorityChart!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('timeChart') timeChart!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('satisfactionChart') satisfactionChart!: ElementRef<HTMLCanvasElement>;
+
   filterForm: FormGroup;
   
   // Mock data
@@ -276,6 +283,10 @@ export class ReportsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Component initialization
+  }
+
+  ngAfterViewInit(): void {
     setTimeout(() => {
       this.initializeCharts();
     }, 100);
@@ -289,150 +300,166 @@ export class ReportsComponent implements OnInit {
   }
 
   private createStatusChart(): void {
-    const canvas = document.querySelector('#statusChart') as HTMLCanvasElement;
-    if (!canvas) return;
-
+    const canvas = this.statusChart.nativeElement;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: Object.keys(this.reportData.ticketsByStatus),
-        datasets: [{
-          data: Object.values(this.reportData.ticketsByStatus),
-          backgroundColor: [
-            '#10B981', // Green for Open
-            '#3B82F6', // Blue for In Progress
-            '#F59E0B', // Yellow for Pending
-            '#8B5CF6', // Purple for Resolved
-            '#6B7280'  // Gray for Closed
-          ],
-          borderWidth: 2,
-          borderColor: '#ffffff'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom'
-          }
-        }
-      }
+    this.drawDoughnutChart(ctx, {
+      labels: Object.keys(this.reportData.ticketsByStatus),
+      data: Object.values(this.reportData.ticketsByStatus),
+      colors: ['#10B981', '#3B82F6', '#F59E0B', '#8B5CF6', '#6B7280']
     });
   }
 
   private createPriorityChart(): void {
-    const canvas = document.querySelector('#priorityChart') as HTMLCanvasElement;
-    if (!canvas) return;
-
+    const canvas = this.priorityChart.nativeElement;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: Object.keys(this.reportData.ticketsByPriority),
-        datasets: [{
-          label: 'Tickets',
-          data: Object.values(this.reportData.ticketsByPriority),
-          backgroundColor: [
-            '#10B981', // Green for Low
-            '#3B82F6', // Blue for Normal
-            '#F59E0B', // Orange for High
-            '#EF4444'  // Red for Urgent
-          ],
-          borderRadius: 4
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
+    this.drawBarChart(ctx, {
+      labels: Object.keys(this.reportData.ticketsByPriority),
+      data: Object.values(this.reportData.ticketsByPriority),
+      colors: ['#10B981', '#3B82F6', '#F59E0B', '#EF4444']
     });
   }
 
   private createTimeChart(): void {
-    const canvas = document.querySelector('#timeChart') as HTMLCanvasElement;
-    if (!canvas) return;
-
+    const canvas = this.timeChart.nativeElement;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: this.reportData.ticketsOverTime.map(d => new Date(d.date).toLocaleDateString()),
-        datasets: [{
-          label: 'Tickets Created',
-          data: this.reportData.ticketsOverTime.map(d => d.count),
-          borderColor: '#3B82F6',
-          backgroundColor: 'rgba(59, 130, 246, 0.1)',
-          fill: true,
-          tension: 0.4
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
+    this.drawLineChart(ctx, {
+      labels: this.reportData.ticketsOverTime.map(d => new Date(d.date).toLocaleDateString()),
+      data: this.reportData.ticketsOverTime.map(d => d.count),
+      color: '#3B82F6'
     });
   }
 
   private createSatisfactionChart(): void {
-    const canvas = document.querySelector('#satisfactionChart') as HTMLCanvasElement;
-    if (!canvas) return;
-
+    const canvas = this.satisfactionChart.nativeElement;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: this.reportData.customerSatisfaction.map(d => `${d.rating} Star${d.rating !== 1 ? 's' : ''}`),
-        datasets: [{
-          label: 'Responses',
-          data: this.reportData.customerSatisfaction.map(d => d.count),
-          backgroundColor: '#F59E0B',
-          borderRadius: 4
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
+    this.drawBarChart(ctx, {
+      labels: this.reportData.customerSatisfaction.map(d => `${d.rating} Star${d.rating !== 1 ? 's' : ''}`),
+      data: this.reportData.customerSatisfaction.map(d => d.count),
+      colors: ['#F59E0B']
+    });
+  }
+
+  private drawDoughnutChart(ctx: CanvasRenderingContext2D, config: any): void {
+    const { labels, data, colors } = config;
+    const centerX = ctx.canvas.width / 2;
+    const centerY = ctx.canvas.height / 2;
+    const radius = Math.min(centerX, centerY) - 40;
+    const innerRadius = radius * 0.6;
+
+    let total = data.reduce((sum: number, value: number) => sum + value, 0);
+    let currentAngle = -Math.PI / 2;
+
+    // Draw segments
+    data.forEach((value: number, index: number) => {
+      const sliceAngle = (value / total) * 2 * Math.PI;
+      
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+      ctx.arc(centerX, centerY, innerRadius, currentAngle + sliceAngle, currentAngle, true);
+      ctx.closePath();
+      ctx.fillStyle = colors[index % colors.length];
+      ctx.fill();
+      
+      currentAngle += sliceAngle;
+    });
+
+    // Draw legend
+    this.drawLegend(ctx, labels, colors, 20, 20);
+  }
+
+  private drawBarChart(ctx: CanvasRenderingContext2D, config: any): void {
+    const { labels, data, colors } = config;
+    const padding = 40;
+    const chartWidth = ctx.canvas.width - padding * 2;
+    const chartHeight = ctx.canvas.height - padding * 2;
+    const barWidth = chartWidth / data.length * 0.8;
+    const maxValue = Math.max(...data);
+
+    // Draw bars
+    data.forEach((value: number, index: number) => {
+      const barHeight = (value / maxValue) * chartHeight;
+      const x = padding + index * (chartWidth / data.length) + (chartWidth / data.length - barWidth) / 2;
+      const y = ctx.canvas.height - padding - barHeight;
+
+      ctx.fillStyle = Array.isArray(colors) ? colors[index % colors.length] : colors[0];
+      ctx.fillRect(x, y, barWidth, barHeight);
+
+      // Draw value on top of bar
+      ctx.fillStyle = '#374151';
+      ctx.font = '12px Inter';
+      ctx.textAlign = 'center';
+      ctx.fillText(value.toString(), x + barWidth / 2, y - 5);
+
+      // Draw label
+      ctx.fillText(labels[index], x + barWidth / 2, ctx.canvas.height - padding + 15);
+    });
+  }
+
+  private drawLineChart(ctx: CanvasRenderingContext2D, config: any): void {
+    const { labels, data, color } = config;
+    const padding = 40;
+    const chartWidth = ctx.canvas.width - padding * 2;
+    const chartHeight = ctx.canvas.height - padding * 2;
+    const maxValue = Math.max(...data);
+    const minValue = Math.min(...data);
+    const valueRange = maxValue - minValue || 1;
+
+    // Draw line
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+
+    data.forEach((value: number, index: number) => {
+      const x = padding + (index / (data.length - 1)) * chartWidth;
+      const y = padding + chartHeight - ((value - minValue) / valueRange) * chartHeight;
+
+      if (index === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
       }
+
+      // Draw point
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+
+    ctx.stroke();
+
+    // Draw labels
+    ctx.fillStyle = '#374151';
+    ctx.font = '12px Inter';
+    ctx.textAlign = 'center';
+    labels.forEach((label: string, index: number) => {
+      const x = padding + (index / (data.length - 1)) * chartWidth;
+      ctx.fillText(label, x, ctx.canvas.height - padding + 15);
+    });
+  }
+
+  private drawLegend(ctx: CanvasRenderingContext2D, labels: string[], colors: string[], x: number, y: number): void {
+    ctx.font = '12px Inter';
+    ctx.textAlign = 'left';
+
+    labels.forEach((label, index) => {
+      const legendY = y + index * 20;
+      
+      // Draw color box
+      ctx.fillStyle = colors[index % colors.length];
+      ctx.fillRect(x, legendY, 12, 12);
+      
+      // Draw label
+      ctx.fillStyle = '#374151';
+      ctx.fillText(label, x + 20, legendY + 9);
     });
   }
 
