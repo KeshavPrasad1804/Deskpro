@@ -19,4 +19,4 @@ bootstrapApplication(App, {
     provideRouter(routes),
     importProvidersFrom(ReactiveFormsModule)
   ]
-});
+}).catch(err => console.error(err));

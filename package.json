@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "ng": "npx ng",
-    "start": "npx ng serve",
-    "dev": "npx ng serve",
-    "build": "npx ng build --configuration=production",
-    "build:dev": "npx ng build --configuration=development",
-    "test": "npx ng test",
-    "lint": "npx ng lint",
-    "analyze": "npx ng build --configuration=production --stats-json && npx webpack-bundle-analyzer dist/demo/stats.json"
+    "ng": "ng",
+    "start": "ng serve",
+    "dev": "ng serve",
+    "build": "ng build --configuration=production",
+    "build:dev": "ng build --configuration=development",
+    "test": "ng test",
+    "lint": "ng lint",
+    "analyze": "ng build --configuration=production --stats-json && webpack-bundle-analyzer dist/demo/stats.json"
   },
   "dependencies": {
     "@angular/animations": "^17.3.0",
