@@ -14,15 +14,23 @@
               "extractLicenses": false,
               "namedChunks": true,
               "optimization": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "buildOptimizer": false
             },
             "production": {
               "aot": true,
               "extractLicenses": true,
               "namedChunks": false,
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": true,
+                "fonts": true
+              },
               "outputHashing": "all",
-              "sourceMap": false
+              "sourceMap": false,
+              "buildOptimizer": true,
+              "vendorChunk": false,
+              "commonChunk": false
             }
           },
           "options": {
