@@ -10,7 +10,9 @@
     "build:dev": "ng build --configuration=development",
     "test": "ng test",
     "lint": "ng lint",
-    "analyze": "ng build --configuration=production --stats-json && webpack-bundle-analyzer dist/demo/stats.json"
+    "analyze": "ng build --configuration=production --stats-json && webpack-bundle-analyzer dist/demo/stats.json",
+    "install": "npm install --legacy-peer-deps",
+    "postinstall": "npm install --legacy-peer-deps"
   },
   "dependencies": {
     "@angular/animations": "^17.3.0",
