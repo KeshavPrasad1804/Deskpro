@@ -9,20 +9,17 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-md w-full space-y-8">
         <div class="text-center">
           <div class="mx-auto h-12 w-12 bg-primary-600 rounded-full flex items-center justify-center">
             <span class="text-white font-bold text-xl">D</span>
           </div>
-          <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+          <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+            Sign in to DeskPro
           </h2>
-          <p class="mt-2 text-center text-sm text-gray-600">
-            Or
-            <a routerLink="/auth/register" class="font-medium text-primary-600 hover:text-primary-500">
-              create a new account
-            </a>
+          <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+            Modern helpdesk and support platform
           </p>
         </div>
 
@@ -81,7 +78,6 @@ import { AuthService } from '../../../core/services/auth.service';
               </div>
               <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="form-error">
                 <span *ngIf="loginForm.get('password')?.hasError('required')">Password is required</span>
-                <span *ngIf="loginForm.get('password')?.hasError('minlength')">Password must be at least 6 characters</span>
               </div>
             </div>
 
@@ -94,7 +90,7 @@ import { AuthService } from '../../../core/services/auth.service';
                   formControlName="rememberMe"
                   class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label for="remember-me" class="ml-2 block text-sm text-gray-900">
+                <label for="remember-me" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">
                   Remember me
                 </label>
               </div>
@@ -116,17 +112,45 @@ import { AuthService } from '../../../core/services/auth.service';
               </button>
             </div>
 
-            <div *ngIf="errorMessage" class="rounded-md bg-red-50 p-4 border border-red-200">
-              <div class="text-sm text-red-700">{{ errorMessage }}</div>
+            <div *ngIf="errorMessage" class="rounded-md bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800">
+              <div class="text-sm text-red-700 dark:text-red-400">{{ errorMessage }}</div>
             </div>
           </form>
 
-          <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h4 class="text-sm font-medium text-blue-800 mb-2">Demo Credentials:</h4>
-            <div class="text-xs text-blue-700 space-y-1">
-              <div><strong>Admin:</strong> admin&#64;example.com / password</div>
-              <div><strong>Agent:</strong> agent&#64;example.com / password</div>
-              <div><strong>Customer:</strong> customer&#64;example.com / password</div>
+          <!-- Demo Credentials -->
+          <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+            <h4 class="text-sm font-medium text-blue-800 dark:text-blue-200 mb-3">Demo Credentials:</h4>
+            <div class="space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-blue-700 dark:text-blue-300"><strong>Admin:</strong> admin@example.com</span>
+                <button 
+                  type="button"
+                  (click)="fillCredentials('admin@example.com', 'password')"
+                  class="text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-2 py-1 rounded hover:bg-blue-200 dark:hover:bg-blue-700">
+                  Use
+                </button>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-blue-700 dark:text-blue-300"><strong>Agent:</strong> agent@example.com</span>
+                <button 
+                  type="button"
+                  (click)="fillCredentials('agent@example.com', 'password')"
+                  class="text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-2 py-1 rounded hover:bg-blue-200 dark:hover:bg-blue-700">
+                  Use
+                </button>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs text-blue-700 dark:text-blue-300"><strong>Customer:</strong> customer@example.com</span>
+                <button 
+                  type="button"
+                  (click)="fillCredentials('customer@example.com', 'password')"
+                  class="text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-2 py-1 rounded hover:bg-blue-200 dark:hover:bg-blue-700">
+                  Use
+                </button>
+              </div>
+              <div class="text-xs text-blue-600 dark:text-blue-400 mt-2">
+                Password for all accounts: <strong>password</strong>
+              </div>
             </div>
           </div>
         </div>
@@ -147,8 +171,15 @@ export class LoginComponent {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required]],
       rememberMe: [false]
+    });
+  }
+
+  fillCredentials(email: string, password: string): void {
+    this.loginForm.patchValue({
+      email: email,
+      password: password
     });
   }
 
@@ -164,7 +195,7 @@ export class LoginComponent {
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = 'Invalid email or password';
+          this.errorMessage = 'Invalid email or password. Please try the demo credentials above.';
         }
       });
     }

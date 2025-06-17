@@ -16,16 +16,34 @@ export class AuthService {
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     // Mock implementation - replace with actual API call
+    let userRole = UserRole.CUSTOMER;
+    let firstName = 'John';
+    let lastName = 'Doe';
+
+    // Determine role and name based on email
+    if (credentials.email.includes('admin')) {
+      userRole = UserRole.ADMIN;
+      firstName = 'Admin';
+      lastName = 'User';
+    } else if (credentials.email.includes('agent')) {
+      userRole = UserRole.AGENT;
+      firstName = 'Agent';
+      lastName = 'Smith';
+    } else if (credentials.email.includes('customer')) {
+      userRole = UserRole.CUSTOMER;
+      firstName = 'Customer';
+      lastName = 'Johnson';
+    }
+
     const mockResponse: LoginResponse = {
-      token: 'mock-jwt-token',
-      refreshToken: 'mock-refresh-token',
+      token: 'mock-jwt-token-' + Date.now(),
+      refreshToken: 'mock-refresh-token-' + Date.now(),
       user: {
-        id: '1',
+        id: Math.random().toString(36).substr(2, 9),
         email: credentials.email,
-        firstName: 'John',
-        lastName: 'Doe',
-        role: credentials.email.includes('admin') ? UserRole.ADMIN : 
-              credentials.email.includes('agent') ? UserRole.AGENT : UserRole.CUSTOMER
+        firstName: firstName,
+        lastName: lastName,
+        role: userRole
       }
     };
 
@@ -51,8 +69,8 @@ export class AuthService {
   register(request: RegisterRequest): Observable<LoginResponse> {
     // Mock implementation - replace with actual API call
     const mockResponse: LoginResponse = {
-      token: 'mock-jwt-token',
-      refreshToken: 'mock-refresh-token',
+      token: 'mock-jwt-token-' + Date.now(),
+      refreshToken: 'mock-refresh-token-' + Date.now(),
       user: {
         id: Math.random().toString(36).substr(2, 9),
         email: request.email,
