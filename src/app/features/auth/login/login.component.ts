@@ -122,7 +122,7 @@ import { AuthService } from '../../../core/services/auth.service';
             <h4 class="text-sm font-medium text-blue-800 dark:text-blue-200 mb-3">Demo Credentials:</h4>
             <div class="space-y-2">
               <div class="flex justify-between items-center">
-                <span class="text-xs text-blue-700 dark:text-blue-300"><strong>Admin:</strong> admin@example.com</span>
+                <span class="text-xs text-blue-700 dark:text-blue-300"><strong>Admin:</strong> admin&#64;example.com</span>
                 <button 
                   type="button"
                   (click)="fillCredentials('admin@example.com', 'password')"
@@ -131,7 +131,7 @@ import { AuthService } from '../../../core/services/auth.service';
                 </button>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-xs text-blue-700 dark:text-blue-300"><strong>Agent:</strong> agent@example.com</span>
+                <span class="text-xs text-blue-700 dark:text-blue-300"><strong>Agent:</strong> agent&#64;example.com</span>
                 <button 
                   type="button"
                   (click)="fillCredentials('agent@example.com', 'password')"
@@ -140,7 +140,7 @@ import { AuthService } from '../../../core/services/auth.service';
                 </button>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-xs text-blue-700 dark:text-blue-300"><strong>Customer:</strong> customer@example.com</span>
+                <span class="text-xs text-blue-700 dark:text-blue-300"><strong>Customer:</strong> customer&#64;example.com</span>
                 <button 
                   type="button"
                   (click)="fillCredentials('customer@example.com', 'password')"
