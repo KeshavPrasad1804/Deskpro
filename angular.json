@@ -14,8 +14,7 @@
               "extractLicenses": false,
               "namedChunks": true,
               "optimization": false,
-              "sourceMap": true,
-              "buildOptimizer": false
+              "sourceMap": true
             },
             "production": {
               "aot": true,
@@ -28,7 +27,6 @@
               },
               "outputHashing": "all",
               "sourceMap": false,
-              "buildOptimizer": true,
               "vendorChunk": false,
               "commonChunk": false
             }
