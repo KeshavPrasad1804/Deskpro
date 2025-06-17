@@ -153,6 +153,28 @@ import { AuthService } from '../../../core/services/auth.service';
               </div>
             </div>
           </div>
+
+          <!-- Quick Login Buttons -->
+          <div class="mt-4 space-y-2">
+            <button 
+              type="button"
+              (click)="quickLogin('admin@example.com', 'password')"
+              class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200">
+              🔑 Quick Login as Admin
+            </button>
+            <button 
+              type="button"
+              (click)="quickLogin('agent@example.com', 'password')"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200">
+              👨‍💼 Quick Login as Agent
+            </button>
+            <button 
+              type="button"
+              (click)="quickLogin('customer@example.com', 'password')"
+              class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200">
+              👤 Quick Login as Customer
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -181,6 +203,11 @@ export class LoginComponent {
       email: email,
       password: password
     });
+  }
+
+  quickLogin(email: string, password: string): void {
+    this.fillCredentials(email, password);
+    this.onSubmit();
   }
 
   onSubmit(): void {
