@@ -2,16 +2,6 @@
   "name": "deskpro-replacement",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "dev": "ng serve",
-    "build": "ng build --configuration=production",
-    "build:dev": "ng build --configuration=development",
-    "test": "ng test",
-    "lint": "ng lint",
-    "analyze": "ng build --configuration=production --stats-json && webpack-bundle-analyzer dist/demo/stats.json"
-  },
   "dependencies": {
     "@angular/animations": "^17.3.0",
     "@angular/common": "^17.3.0",
