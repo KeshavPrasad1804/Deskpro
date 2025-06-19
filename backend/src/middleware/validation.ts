@@ -120,6 +120,23 @@ export const schemas = {
     color: Joi.string().pattern(/^#[0-9A-F]{6}$/i).optional()
   }),
 
+  createTask: Joi.object({
+    title: Joi.string().min(3).max(200).required(),
+    description: Joi.string().allow('').optional(),
+    priority: Joi.string().valid('low', 'normal', 'high').default('normal'),
+    assignedTo: Joi.string().optional(),
+    dueDate: Joi.date().optional()
+  }),
+
+  updateTask: Joi.object({
+    title: Joi.string().min(3).max(200).optional(),
+    description: Joi.string().allow('').optional(),
+    status: Joi.string().valid('todo', 'in_progress', 'done').optional(),
+    priority: Joi.string().valid('low', 'normal', 'high').optional(),
+    assignedTo: Joi.string().optional(),
+    dueDate: Joi.date().allow(null).optional()
+  }),
+
   chatMessage: Joi.object({
     content: Joi.string().min(1).required(),
     messageType: Joi.string().valid('text', 'image', 'file', 'system').default('text')

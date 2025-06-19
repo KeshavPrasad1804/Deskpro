@@ -20,6 +20,7 @@ import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 import ticketRoutes from './routes/tickets';
 import uploadRoutes from './routes/upload';
+import taskRoutes from './routes/tasks';
 
 // Import middleware
 import { ApiResponse } from './types';
@@ -88,6 +89,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/tickets', ticketRoutes);
+app.use('/api/tasks', taskRoutes);
 app.use('/api/upload', uploadRoutes);
 
 // Socket.IO for real-time features
